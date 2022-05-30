@@ -20,11 +20,11 @@ const query = util.promisify(connection.query).bind(connection);
 
 exports.register = async function (req, res) {
   try {
-    const { username, password, phone } = req.body;
-    if (!username.length || !password.length || !phone.length)
+    const { username, password } = req.body;
+    if (!username.length || !password.length)
       return res
         .status(400)
-        .json({ message: 'Username, password, and phone must be filled' });
+        .json({ message: 'Username and password must be filled' });
     const result = await query(
       `SELECT * FROM users WHERE username = '${username}'`
     );
@@ -32,7 +32,7 @@ exports.register = async function (req, res) {
       return res.status(400).json({ message: 'Username already exist' });
     const hash = await bcrypt.hash(password, 10);
     await query(
-      `INSERT INTO users (username, password, phone) VALUES ('${username}', '${hash}', ${phone})`
+      `INSERT INTO users (username, password) VALUES ('${username}', '${hash}')`
     );
     res.status(200).json({
       message: 'Account created',
