@@ -3,10 +3,10 @@ const jwt = require('jsonwebtoken');
 const mysql = require('mysql');
 const util = require('util');
 const connection = mysql.createConnection({
-  host: '34.66.21.143',
-  user: 'test',
-  password: process.env.USER_PASSWORD,
-  database: 'violence-detection',
+  host: '34.101.191.226',
+  user: 'root',
+  password: process.env.DB_PASSWORD,
+  database: 'guardian-db',
 });
 
 connection.connect((err) => {
@@ -20,19 +20,19 @@ const query = util.promisify(connection.query).bind(connection);
 
 exports.register = async function (req, res) {
   try {
-    const { username, password } = req.body;
-    if (!username.length || !password.length)
+    const { username, password, phone } = req.body;
+    if (!username.length || !password.length || !phone.length)
       return res
         .status(400)
-        .json({ message: 'Username and password must be filled' });
+        .json({ message: 'Username, password, and phone must be filled' });
     const result = await query(
-      `SELECT * FROM users WHERE username = '${username}'`
+      `SELECT * FROM user WHERE username = '${username}'`
     );
     if (result.length)
       return res.status(400).json({ message: 'Username already exist' });
     const hash = await bcrypt.hash(password, 10);
     await query(
-      `INSERT INTO users (username, password) VALUES ('${username}', '${hash}')`
+      `INSERT INTO user (username, password, phone) VALUES ('${username}', '${hash}', '${phone}')`
     );
     res.status(200).json({
       message: 'Account created',
@@ -51,7 +51,7 @@ exports.login = async function (req, res) {
         .status(400)
         .json({ message: 'Username and password must be filled' });
     const result = await query(
-      `SELECT * FROM users WHERE username = '${username}'`
+      `SELECT * FROM user WHERE username = '${username}'`
     );
     // console.log(result);
     if (!result.length)
