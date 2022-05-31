@@ -3,10 +3,10 @@ const jwt = require('jsonwebtoken');
 const mysql = require('mysql');
 const util = require('util');
 const connection = mysql.createConnection({
-  host: '34.101.191.226',
-  user: 'root',
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: 'guardian-db',
+  database: process.env.DB_NAME,
 });
 
 connection.connect((err) => {
