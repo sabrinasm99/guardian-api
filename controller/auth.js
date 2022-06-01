@@ -1,22 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const mysql = require('mysql');
-const util = require('util');
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
-
-connection.connect((err) => {
-  if (err) {
-    return console.log(err);
-  }
-  console.log('Connected');
-});
-
-const query = util.promisify(connection.query).bind(connection);
+const query = require('../db/connection');
 
 exports.register = async function (req, res) {
   try {
@@ -53,7 +37,6 @@ exports.login = async function (req, res) {
     const result = await query(
       `SELECT * FROM user WHERE username = '${username}'`
     );
-    // console.log(result);
     if (!result.length)
       return res.status(400).json({ message: 'Failed login' });
     const match = await bcrypt.compare(password, result[0].password);
