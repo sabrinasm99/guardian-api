@@ -18,7 +18,7 @@ router.post('/login', login);
 
 // User
 router.get('/user/:id', authenticated, getUserById);
-router.put('/user/:id', authenticated, fileUpload(), updateUser);
+router.put('/user/:id', authenticated, updateUser);
 
 // Contact
 router.get('/contact/:userId', authenticated, getContactsByUserId);
