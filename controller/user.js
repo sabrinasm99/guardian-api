@@ -6,7 +6,7 @@ const { Storage } = require('@google-cloud/storage');
 const { format } = require('util');
 // Instantiate a storage client with credentials
 const storage = new Storage({
-  keyFilename: path.join(__dirname, '../sacred-armor-346113-862ffb9b3718.json'),
+  keyFilename: process.env.keyFilename,
   projectId: 'sacred-armor-346113',
 });
 const bucket = storage.bucket('ex-bucket-test');
